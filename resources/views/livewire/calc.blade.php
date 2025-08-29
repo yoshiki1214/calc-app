@@ -1,57 +1,39 @@
 <?php
 
-use function Livewire\Volt\{state, computed};
+use function Livewire\Volt\{state, mount};
 
-state(['left-operand' , 'right-operand' , 'calcs']);
+state(['calcs', 'left_operand', 'right_operand', 'result']);
 
-$calcs = [
-    'addition' => '+',
-    'subtraction' => '-',
-    'multiplication' => '*',
-    'division' => '/',
-];
-
-computed('calcs', fn () =>
-    $calcs[$this->calcs] ?? '?'
-);
-
-computed('result', function () use ($calcs) {
-    if (!isset($calcs[$this->calcs])) {
-        return '?';
+mount(function ($calcs, $left_operand, $right_operand) {
+    $this->left_operand = $left_operand;
+    $this->right_operand = $right_operand;
+    switch ($calcs) {
+        case 'addition':
+            $this->calcs = '+';
+            $this->result = $this->left_operand + $this->right_operand;
+            break;
+        case 'subtraction':
+            $this->calcs = '-';
+            $this->result = $this->left_operand - $this->right_operand;
+            break;
+        case 'multiplication':
+            $this->calcs = '×';
+            $this->result = $this->left_operand * $this->right_operand;
+            break;
+        case 'division':
+            $this->calcs = '÷';
+            $this->result = $this->left_operand / $this->right_operand;
+            break;
+        default:
+            $this->calcs = '?';
+            $this->result = '無効な演算子です';
+            break;
     }
-
-    return match ($this->calcs) {
-        'addition'       => $this->left-operand + $this->right-operand,
-        'subtraction'    => $this->left-operand - $this->right-operand,
-        'multiplication' => $this->left-operand * $this->right-operand,
-        'division'       => $this->right-operand != 0 ? $this->left-operand / $this->right-operand : 'NaN',
-    };
 });
 
 ?>
 
 <div>
-    <h1>{{ $left-operand }} {{ $calcs }} {{ $right-operand }} = {{ $result }}</h1>
+    <h1>計算結果</h1>
+    <p>{{ $left_operand }} {{ $calcs }} {{ $right_operand }} = {{ $result }}</p>
 </div>
-//計算式
-// mount(function()switch ($calcs) {
-//     case 'addition':
-//         echo $result = 'value1' + 'value2';
-//         break;
-//     case 'subtraction':
-//         echo $result = 'value1' - 'value2';
-//         break;
-//     case 'multiplication':
-//         echo $result = 'value1' * 'value2';
-//         break;
-//     case 'division':
-//         echo $result = 'value1' / 'value2';
-//         break;
-
-//     default:
-//         echo '無効な演算子です';
-//         break;
-// })
-?>
-
-
